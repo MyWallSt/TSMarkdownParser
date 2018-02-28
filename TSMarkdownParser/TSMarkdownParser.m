@@ -88,8 +88,9 @@ typedef NSFont UIFont;
     }];
     
     [defaultParser addListParsingWithMaxLevel:0 leadFormattingBlock:^(NSMutableAttributedString *attributedString, NSRange range, NSUInteger level) {
+        NSMutableString *listString = [NSMutableString string];
         while (--level)
-        [listString appendString:@""];
+            [listString appendString:@""];
         [listString appendString:@"•  "];
         [attributedString replaceCharactersInRange:range withString:listString];
 
