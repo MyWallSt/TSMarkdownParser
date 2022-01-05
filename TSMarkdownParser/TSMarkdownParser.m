@@ -121,16 +121,20 @@ typedef NSFont UIFont;
             NSAttributedString *imgStr = [NSAttributedString attributedStringWithAttachment:imageAttachment];
             [attributedString replaceCharactersInRange:range withAttributedString:imgStr];
         } else {
-            if (!weakParser.skipLinkAttribute) {
-                NSURL *url = [NSURL URLWithString:link] ?: [NSURL URLWithString:
-                                                            [link stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                if (url.scheme) {
-                    [attributedString addAttribute:NSLinkAttributeName
-                                             value:url
-                                             range:range];
-                }
-            }
-            [attributedString addAttributes:weakParser.imageAttributes range:range];
+            
+            NSURL *url = [NSURL URLWithString:link] ?: [NSURL URLWithString:
+                                                        [link stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            
+            UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+            
+            NSTextAttachment *imageAttachment = [NSTextAttachment new];
+            imageAttachment.image = image;
+            CGRect screenBounds = [[UIScreen mainScreen] bounds];
+            CGFloat width = screenBounds.size.width - 32;
+            CGFloat height = image.size.height / (image.size.width / width);
+            imageAttachment.bounds = CGRectMake(0, -5, width, height);
+            NSAttributedString *imgStr = [NSAttributedString attributedStringWithAttachment:imageAttachment];
+            [attributedString replaceCharactersInRange:range withAttributedString:imgStr];
         }
     }];
     
